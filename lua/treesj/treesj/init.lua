@@ -58,7 +58,9 @@ end
 ---Recursive parse current node children and building TreeSJ
 ---@param mode string
 function TreeSJ:build_tree(mode)
-  local children = u.collect_children(self:tsnode(), u.skip_empty_nodes)
+  local preset = self:preset(mode) or {}
+  local children = u.collect_children(self:tsnode(), preset.filter)
+  -- vim.pretty_print(children)
   local prev
 
   local framing = self:preset() and self:preset(mode).add_framing_nodes

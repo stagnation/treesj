@@ -33,7 +33,7 @@ function M._format(mode)
   local node = ts_data.node
   local ts_type = ts_data.type
 
-  local sr, sc, er, ec = u.range(node, p)
+  local sr, sc, er, ec = u.range(node)
   local MODE = mode or sr == er and SPLIT or JOIN
   local p = u.get_preset(node, MODE)
     or u.get_preset({ node = node, type = ts_type }, MODE)
@@ -67,6 +67,7 @@ function M._format(mode)
   treesj:build_tree(MODE)
   treesj[MODE](treesj)
   local replacement = treesj:get_lines()
+  -- vim.pretty_print('Repl: ', replacement)
 
   if MODE == JOIN and #replacement[1] > MAX_LENGTH then
     notify.info(msg.extra_longer:format(MAX_LENGTH))

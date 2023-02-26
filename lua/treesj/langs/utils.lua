@@ -175,6 +175,7 @@ M.set_preset_for_non_bracket = set_preset({
 
 M.no_insert = {}
 M.omit = {}
+M.filter = {}
 
 local function if_penultimate(tsj)
   local next = tsj:next()
@@ -191,5 +192,20 @@ M.no_insert.if_second = if_second
 
 M.omit.if_penultimate = if_penultimate
 M.omit.if_second = if_second
+
+M.filter.skip_nodes = function(nodes)
+  return function(tsn)
+    return not vim.tbl_contains(nodes, tsn:type())
+  end
+end
+
+M.filter.skip_nodes_if_one_named = function(nodes)
+  return function(tsn)
+    if tsn:parent():named_child_count() == 1 then
+      return not vim.tbl_contains(nodes, tsn:type())
+    end
+    return true
+  end
+end
 
 return M

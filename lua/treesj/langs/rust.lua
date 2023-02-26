@@ -1,4 +1,5 @@
 local u = require('treesj.langs.utils')
+-- local uu = require('treesj.utils')
 
 return {
   field_declaration_list = u.set_preset_for_dict(),
@@ -33,13 +34,9 @@ return {
   block = u.set_preset_for_statement({
     join = {
       no_insert_if = { u.no_insert.if_penultimate },
-      foreach = function(tsj)
-        if tsj:root():tsnode():named_child_count() < 2 then
-          if tsj:is_framing() then
-            tsj:remove()
-          end
-        end
-      end,
+      filter = {
+        u.filter.skip_nodes({ '{', '}' })
+      },
     },
   }),
   use_list = u.set_preset_for_list(),

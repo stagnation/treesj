@@ -25,6 +25,7 @@ return {
     foreach = nil,
     -- nil|table { left = string, right = string }
     add_framing_nodes = nil,
+    remove_nodes = {},
     -- boolean|function function (tsnode): boolean
     -- Set `false` if node should't be splitted or joined. Can be different for both modes
     enable = true,
