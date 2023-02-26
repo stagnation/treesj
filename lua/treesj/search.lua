@@ -49,9 +49,20 @@ function M.search_inside_node(node, targets)
   return nil
 end
 
+function M.search_field(node, targets)
+  targets = targets or u.get_targets(node)
+  for _, type in ipairs(targets) do
+    local tbl = node:field(type)
+    if not vim.tbl_isempty(tbl) then
+      return tbl[1], type
+    end
+  end
+  return nil, nil
+end
+
 ---Return the closest configured node if found or nil
 ---@param node userdata|nil TSNode instance
----@return userdata
+---@return table { userdata, string }
 function M.get_configured_node(node)
   if not node then
     error(msg.node_not_received, 0)
@@ -68,17 +79,28 @@ function M.get_configured_node(node)
     error(msg.no_configured_node:format(start_node_type, lang), 0)
   end
 
+  local ts_type
   local target_node_ancestor
   if u.has_targets(node) then
     target_node_ancestor = node:type()
-    node = M.search_inside_node(node)
+    local field, name = M.search_field(node)
+    ts_type = name
+
+    if not field then
+      node = M.search_inside_node(node)
+    else
+      node = field
+    end
+
     if not node then
       -- TODO: send node parrent to search up
       error(msg.no_contains_target_node:format(target_node_ancestor), 0)
     end
   end
 
-  return node
+  ts_type = ts_type or node:type()
+
+  return { node = node, type = ts_type }
 end
 
 return M

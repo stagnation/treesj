@@ -24,15 +24,19 @@ function M._format(mode)
     return
   end
 
-  local found, node = pcall(search.get_configured_node, start_node)
+  local found, ts_data = pcall(search.get_configured_node, start_node)
   if not found then
-    notify.warn(node)
+    notify.warn(ts_data)
     return
   end
 
-  local sr, sc, er, ec = u.range(node)
+  local node = ts_data.node
+  local ts_type = ts_data.type
+
+  local sr, sc, er, ec = u.range(node, p)
   local MODE = mode or sr == er and SPLIT or JOIN
   local p = u.get_preset(node, MODE)
+    or u.get_preset({ node = node, type = ts_type }, MODE)
 
   if p and not p.format_empty_node then
     if not p.non_bracket_node and u.is_empty_node(node, p) then
@@ -59,7 +63,7 @@ function M._format(mode)
     return
   end
 
-  local treesj = TreeSJ.new(node)
+  local treesj = TreeSJ.new(node, nil, ts_type)
   treesj:build_tree(MODE)
   treesj[MODE](treesj)
   local replacement = treesj:get_lines()

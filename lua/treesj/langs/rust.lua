@@ -33,10 +33,26 @@ return {
   block = u.set_preset_for_statement({
     join = {
       no_insert_if = { u.no_insert.if_penultimate },
+      foreach = function(tsj)
+        if tsj:root():tsnode():named_child_count() < 2 then
+          if tsj:is_framing() then
+            tsj:remove()
+          end
+        end
+      end,
     },
   }),
   use_list = u.set_preset_for_list(),
   array_expression = u.set_preset_for_list(),
+  value = u.set_preset_for_statement({
+    split = {
+      non_bracket_node = true,
+      add_framing_nodes = { left = '{', right = '}' },
+    },
+  }),
+  match_arm = {
+    target_nodes = { 'value' },
+  },
   let_declaration = {
     target_nodes = {
       'field_declaration_list',

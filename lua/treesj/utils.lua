@@ -88,18 +88,20 @@ end
 
 ---Return the preset for received node.
 ---If mode passed, return preset for specified mode
----@param node userdata TSNode instance
+---@param node userdata|table TSNode instance
 ---@param mode? string Current mode (split|join)
 ---@return table|nil
 function M.get_preset(node, mode)
-  local lang = M.get_node_lang(node)
+  local ts_type = type(node) == 'userdata' and node:type() or node.type
+  local tsn = type(node) == 'userdata' and node or node.node
+
+  local lang = M.get_node_lang(tsn)
   if not M.is_lang_support(lang) then
     return nil
   end
   local preset = langs[lang]
-  local type = node:type()
-  if preset[type] then
-    return mode and preset[type][mode] or preset[type]
+  if preset[ts_type] then
+    return mode and preset[ts_type][mode] or preset[ts_type]
   else
     return nil
   end
@@ -108,8 +110,9 @@ end
 ---Return the preset for current node if it no contains field 'target_nodes'
 ---@param node userdata TSNode instance
 ---@return table|nil
-function M.get_self_preset(node)
-  local p = M.get_preset(node)
+function M.get_self_preset(node, ts_type)
+  ts_type = ts_type or node:type()
+  local p = M.get_preset(node) or M.get_preset({ node = node, type = ts_type })
   if p and not p.target_nodes then
     return p
   end

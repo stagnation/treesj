@@ -22,12 +22,13 @@ TreeSJ.__index = TreeSJ
 ---New TreeSJ instance
 ---@param tsnode userdata|table TSNode instance
 ---@param parent? TreeSJ TreeSJ instance. When parent not passed, the node is recognized as a root
-function TreeSJ.new(tsnode, parent)
+---@param ts_type? string Type to use for field
+function TreeSJ.new(tsnode, parent, ts_type)
   local root_preset = parent and parent:root():preset() or nil
 
   local is_tsn = type(tsnode) == 'userdata'
   local hntf = is_tsn and u.has_node_to_format(tsnode, root_preset) or false
-  local preset = is_tsn and u.get_self_preset(tsnode) or nil
+  local preset = is_tsn and u.get_self_preset(tsnode, ts_type) or nil
   local text = tsnode:type() == 'imitator' and tsnode:text()
     or u.get_node_text(tsnode)
   local range = is_tsn and tu.get_observed_range(tsnode) or { tsnode:range() }
@@ -65,6 +66,9 @@ function TreeSJ:build_tree(mode)
   if self:non_bracket() or framing then
     local left = framing and framing.left
     local right = framing and framing.right
+    if #children == 0 and self._root then
+      children = { self:tsnode() }
+    end
     tu.add_first_last_imitator(self:tsnode(), children, left, right)
   end
 
