@@ -35,7 +35,14 @@ return {
     join = {
       no_insert_if = { u.no_insert.if_penultimate },
       filter = {
-        u.filter.skip_nodes({ '{', '}' })
+        function(tsn)
+          if u.container.has_parent(tsn, 'match_arm') then
+            local skip = { '{', '}' }
+            return not vim.tbl_contains(skip, tsn:type())
+          else
+            return true
+          end
+        end,
       },
     },
   }),

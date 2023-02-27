@@ -60,7 +60,6 @@ end
 function TreeSJ:build_tree(mode)
   local preset = self:preset(mode) or {}
   local children = u.collect_children(self:tsnode(), preset.filter)
-  -- vim.pretty_print(children)
   local prev
 
   local framing = self:preset() and self:preset(mode).add_framing_nodes

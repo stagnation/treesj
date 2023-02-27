@@ -18,11 +18,11 @@ return {
     split = {
       non_bracket_node = true,
       add_framing_nodes = { left = '{', right = '}' },
-      foreach = function(tsj)
-        if tsj:next() and tsj:next():is_last() then
-          tsj:_update_text('return ' .. tsj:text())
-        end
-      end,
+      -- foreach = function(tsj)
+      --   if tsj:next() and tsj:next():is_last() then
+      --     tsj:_update_text('return ' .. tsj:text())
+      --   end
+      -- end,
     },
   }),
   statement_block = u.set_preset_for_statement({
@@ -31,11 +31,11 @@ return {
         u.filter.skip_nodes_if_one_named({ '{', '}' }),
       },
       foreach = function(tsj)
-        if tsj:is_last() then
-          local text = string.gsub(tsj:text(), 'return ', '')
-          text = string.gsub(text, ';$', '')
-          tsj:_update_text(text)
-        end
+        -- if tsj:is_last() then
+        --   local text = string.gsub(tsj:text(), 'return ', '')
+        --   text = string.gsub(text, ';$', '')
+        --   tsj:_update_text(text)
+        -- end
       end,
       no_insert_if = {
         'function_declaration',
